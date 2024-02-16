@@ -1,0 +1,37 @@
+* render_inner(self, token)
+return a list of rendering of children
+
+* parsing_in_meta_mode
+What we have done is
+- for list_item
+  we have explicitly stated that it should be rendered Dict.
+- This sets the parsing_in_meta_mode on and results are collected
+  as dict.
+- render functions that are decorated with parse_as_dict_or_via_hcgen
+  will check for parsing_in_meta_mode and then call the render function
+  with asdict=True.
+
+  -- if parsing_in_meta_mode is False, then we lookup for corresponding hcgen.
+     for e.g. render_link will look for link_view_handler
+     and then render this via Dict/hcgen
+
+* openCloseCtx
+mditems such as list which contain other items are wrapped with openCloseCtx(hcgen).
+which means open the context. render the childrens (so that they are hooked onto this parent)
+and then close the context.
+
+
+
+* The design principles
+** The absoulte first: render_document is invoked
+which creates open/close context with PC.Container 
+** if a heading is seen:
+process_heading is the decorator for this.
+- if its a directive. i..e., heading is greater than 5 levels then apply the directive
+- else call openHeadingCtx: what it means is create a StackV child-grabber  and stick it to mditem_ctxstack;
+call the render_heading to get the contents of the heading
+
+
+  
+
+
